@@ -12,20 +12,6 @@ This repository shows how to set up a **local Jenkins server** using Docker Comp
 
 ---
 
-## Repository Layout
-
-.
-├── Jenkinsfile           # Declarative Pipeline definition
-├── app.py                # Simple Python app
-├── test_app.py           # Pytest test cases
-├── requirements.txt      # Python dependencies
-├── jenkins-compose/      # Jenkins environment
-│   ├── docker-compose.yml
-│   └── jenkins/
-│       └── Dockerfile
-
----
-
 ## Running Jenkins with Docker Compose
 
 1. Move into the Jenkins compose folder:
@@ -33,25 +19,25 @@ This repository shows how to set up a **local Jenkins server** using Docker Comp
    ```bash
    cd jenkins-compose
 
-	2.	Start Jenkins:
+2.	Start Jenkins:
 
 docker compose up -d --build
 
 
-	3.	Grab the admin password:
+3.	Grab the admin password:
 
 docker exec -it jenkins bash -lc 'cat /var/jenkins_home/secrets/initialAdminPassword'
 
 
-	4.	Open Jenkins at http://localhost:8080 and finish the setup wizard:
-	•	Install Suggested Plugins
-	•	Create your admin user
+4.	Open Jenkins at http://localhost:8080 and finish the setup wizard:
+ - Install Suggested Plugins
+ - Create your admin user
 
-⸻
+---
 
-Jenkins Configuration
+## Jenkins Configuration
 
-Install required plugins
+### Install required plugins
 
 In Manage Jenkins → Plugins, ensure these are installed:
 	•	Pipeline
@@ -61,19 +47,19 @@ In Manage Jenkins → Plugins, ensure these are installed:
 	•	JUnit
 	•	(Optional) Workspace Cleanup
 
-Create a Pipeline Job
-	1.	New Item → Pipeline → hello-jenkins-py
-	2.	Definition: Pipeline script from SCM
-	3.	SCM: Git
-	•	Repository URL: https://github.com/<your-username>/jenkins-sandbox.git
-	•	Credentials: None (for public repo)
-	•	Branches to build: */main (or */master)
-	•	Script Path: Jenkinsfile
-	4.	Save → Build Now
+### Create a Pipeline Job
+1.	New Item → Pipeline → hello-jenkins-py
+2.	Definition: Pipeline script from SCM
+3.	SCM: Git
+ - Repository URL: https://github.com/<your-username>/jenkins-sandbox.git
+ - Credentials: None (for public repo)
+ - Branches to build: */main (or */master)
+ - Script Path: Jenkinsfile
+4.	Save → Build Now
 
-⸻
+---
 
-The Jenkinsfile Explained
+## The Jenkinsfile Explained
 
 pipeline {
   agent { docker { image 'python:3.13-slim' } }
@@ -112,14 +98,14 @@ pipeline {
   }
 }
 
-	•	Agent: runs every stage in a fresh python:3.13-slim container
-	•	Checkout: cleans the workspace and clones the repo
-	•	Install deps: installs Python requirements
-	•	Test: runs pytest and publishes test results in Jenkins UI
+- Agent: runs every stage in a fresh python:3.13-slim container
+- Checkout: cleans the workspace and clones the repo
+- Install deps: installs Python requirements
+- Test: runs pytest and publishes test results in Jenkins UI
 
-⸻
+---
 
-Python Project
+## Python Project
 
 Run locally
 
@@ -128,17 +114,16 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pytest -q
 
-
-⸻
+---
 
 Notes
-	•	Jenkins exposes:
-	•	8080 → Web UI
-	•	50000 → JNLP agent port (not needed locally, useful for remote agents)
-	•	Jenkins container runs as root to allow access to the Docker socket (/var/run/docker.sock)
-	•	Default branch is master (check your repo and adjust Jenkins config accordingly)
+- Jenkins exposes:
+- 8080 → Web UI
+- 50000 → JNLP agent port (not needed locally, useful for remote agents)
+- Jenkins container runs as root to allow access to the Docker socket (/var/run/docker.sock)
+- Default branch is master (check your repo and adjust Jenkins config accordingly)
 
-⸻
+---
 
 Common Issues
 	•	fatal: not in a git directory
@@ -148,16 +133,3 @@ Caused by stale workspaces. Fixed by:
 	•	permission denied /var/run/docker.sock
 Caused when Jenkins can’t talk to Docker. Fixed by running Jenkins container as root.
 
-⸻
-
-Next Steps
-	•	Add linting (flake8) and coverage (pytest-cov)
-	•	Configure GitHub webhook → trigger Jenkins on pushes
-	•	Optionally move repo into a GitHub Organization for branch protection rules
-
-⸻
-
-
----
-
-Do you want me to also include in this README the **docker-compose.yml** and **jenkins/Dockerfile** snippets, so anyone can just copy-paste without hunting inside the repo?
