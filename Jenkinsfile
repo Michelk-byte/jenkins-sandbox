@@ -1,11 +1,12 @@
 pipeline {
-  agent {
-    docker { image 'python:3.13-slim' }
-  }
-  options { timestamps() }
+  agent { docker { image 'python:3.13-slim' } }
+  options { skipDefaultCheckout(); timestamps() }   // stop the automatic checkout
   stages {
     stage('Checkout') {
-      steps { checkout scm }
+      steps {
+        deleteDir()            // nuke anything stale in the workspace
+        checkout scm           // full clone of your repo here
+      }
     }
     stage('Install deps') {
       steps {
