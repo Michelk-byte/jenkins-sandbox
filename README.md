@@ -161,7 +161,7 @@ The CI Pipeline List page shows data for only the default branch of each reposit
 
 ---
 
-Notes
+### Notes
 - Jenkins exposes:
 - 8080 → Web UI
 - 50000 → JNLP agent port (not needed locally, useful for remote agents)
@@ -170,11 +170,11 @@ Notes
 
 ---
 
-Common Issues
-	•	fatal: not in a git directory
+### Common Issues
+- fatal: not in a git directory
 Caused by stale workspaces. Fixed by:
-	•	Using deleteDir() before checkout scm (as in Jenkinsfile)
-	•	Or enabling “Clean before checkout” in job config
-	•	permission denied /var/run/docker.sock
+- Using deleteDir() before checkout scm (as in Jenkinsfile)
+- Or enabling “Clean before checkout” in job config
+- permission denied /var/run/docker.sock
 Caused when Jenkins can’t talk to Docker. Fixed by running Jenkins container as root.
 
