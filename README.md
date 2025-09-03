@@ -68,7 +68,6 @@ In Manage Jenkins → Plugins, ensure these are installed:
 ## The Jenkinsfile Explained
 
 <pre markdown="1">
-```groovy
 pipeline {
   agent { docker { image 'python:3.13-slim' } }
 
@@ -101,7 +100,6 @@ pipeline {
     }
   }
 }
-```
 </pre>
 
 - Agent: runs every stage in a fresh python:3.13-slim container
@@ -161,7 +159,7 @@ The CI Pipeline List page shows data for only the default branch of each reposit
 
 ---
 
-### Notes
+## Notes
 - Jenkins exposes:
 - 8080 → Web UI
 - 50000 → JNLP agent port (not needed locally, useful for remote agents)
@@ -170,7 +168,7 @@ The CI Pipeline List page shows data for only the default branch of each reposit
 
 ---
 
-### Common Issues
+## Common Issues
 - fatal: not in a git directory
 Caused by stale workspaces. Fixed by:
 - Using deleteDir() before checkout scm (as in Jenkinsfile)
