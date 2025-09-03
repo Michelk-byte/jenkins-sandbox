@@ -57,10 +57,10 @@ In Manage Jenkins → Plugins, ensure these are installed:
 1.	New Item → Pipeline → hello-jenkins-py
 2.	Definition: Pipeline script from SCM
 3.	SCM: Git
- - Repository URL: https://github.com/<your-username>/jenkins-sandbox.git
- - Credentials: None (for public repo)
- - Branches to build: */main (or */master)
- - Script Path: Jenkinsfile
+   - Repository URL: https://github.com/<your-username>/jenkins-sandbox.git
+   - Credentials: None (for public repo)
+   - Branches to build: */main (or */master)
+   - Script Path: Jenkinsfile
 4.	Save → Build Now
 
 ---
@@ -144,10 +144,10 @@ Use this option to make the Jenkins plugin report directly to Datadog without us
 5. Enter a valid Datadog API Key (or use Select from credentials option).
 6. Click the Test Key button to verify that your API key is valid.
 7. Configure CI Visibility:
-   a) Enable the Enable CI Visibility checkbox.
-   b) (Optional) Configure your CI Instance name.
+   - a. Enable the Enable CI Visibility checkbox.
+   - b. (Optional) Configure your CI Instance name.
 8. (Optional) Configure logs collection:
-   a) Enable the Enable Log Collection checkbox.
+   - a. Enable the Enable Log Collection checkbox.
 9. (Optional) Enter the name of the host that you use to access Datadog UI (for example, app.datadoghq.com) in the Datadog App hostname field.
 10. Save your configuration.
 
