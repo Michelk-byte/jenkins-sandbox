@@ -1,6 +1,6 @@
-# Jenkins + Python CI/CD Example
+# Jenkins + Python CI/CD Example (with Datadog)
 
-This repository shows how to set up a **local Jenkins server** using Docker Compose, run a **sample Python project**, and configure a **Declarative Pipeline** for testing with `pytest`.
+This repository shows how to set up a **local Jenkins server** using Docker Compose, run a **sample Python project**, configure a **Declarative Pipeline** for testing with `pytest`, and send build/test metrics to **Datadog**.
 
 ---
 
@@ -9,6 +9,7 @@ This repository shows how to set up a **local Jenkins server** using Docker Comp
 - macOS (or Linux)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
 - [Git](https://git-scm.com/downloads)
+- A [Datadog account](https://app.datadoghq.com/) with an API key
 
 ---
 
@@ -40,12 +41,14 @@ docker exec -it jenkins bash -lc 'cat /var/jenkins_home/secrets/initialAdminPass
 ### Install required plugins
 
 In Manage Jenkins → Plugins, ensure these are installed:
-	•	Pipeline
-	•	Git
-	•	Git client
-	•	Docker Pipeline
-	•	JUnit
-	•	(Optional) Workspace Cleanup
+  -	Pipeline
+  -	Git
+  -	Git client
+  -	Docker Pipeline
+  -	JUnit
+  - Stage View
+  - Datadog
+	-	(Optional) Workspace Cleanup
 
 ### Create a Pipeline Job
 1.	New Item → Pipeline → hello-jenkins-py
@@ -113,6 +116,43 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pytest -q
+
+---
+
+## Datadog Integration (Agentless)
+
+### Install and enable the Datadog Jenkins plugin v3.1.0 or later:
+
+In your Jenkins instance web interface, go to Manage Jenkins > Manage Plugins.
+In the Update Center on the Available tab, search for Datadog Plugin.
+Select the checkbox next to the plugin, and install using one of the two install buttons at the bottom of the screen.
+To verify that the plugin is installed, search for Datadog Plugin on the Installed tab.
+
+### Configure the Datadog Jenkins plugin
+
+Use this option to make the Jenkins plugin report directly to Datadog without using the Datadog Agent. It requires an API Key.
+
+1. In your Jenkins instance web interface, go to Manage Jenkins > Configure System.
+2. Go to the Datadog Plugin section, scrolling down the configuration screen.
+3. Select the mode Use Datadog site and API key to report to Datadog.
+4. Select your Datadog site in the Pick a site dropdown.
+5. Enter a valid Datadog API Key (or use Select from credentials option).
+6. Click the Test Key button to verify that your API key is valid.
+7. Configure CI Visibility:
+  a) Enable the Enable CI Visibility checkbox.
+  b) (Optional) Configure your CI Instance name.
+8. (Optional) Configure logs collection:
+  a) Enable the Enable Log Collection checkbox.
+9. (Optional) Enter the name of the host that you use to access Datadog UI (for example, app.datadoghq.com) in the Datadog App hostname field.
+10. Save your configuration.
+
+![Datadog jenkins plugin configuration](https://datadog-docs.imgix.net/images/ci/ci-jenkins-plugin-config-agentless-app-hostname.91c692b697d9bdffeb04493e2d1a2e17.png?fit=max&auto=format)
+
+### Visualize pipeline data in Datadog
+
+Once the integration is successfully configured, both the CI Pipeline List and Executions pages populate with data after pipelines finish.
+
+The CI Pipeline List page shows data for only the default branch of each repository. For more information, see Search and Manage CI Pipelines.
 
 ---
 
