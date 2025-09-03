@@ -9,7 +9,7 @@ This repository shows how to set up a **local Jenkins server** using Docker Comp
 - macOS (or Linux)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
 - [Git](https://git-scm.com/downloads)
-- A [Datadog account](https://app.datadoghq.com/) with an API key
+- [Datadog account](https://app.datadoghq.com/) with an API key
 
 ---
 
@@ -17,22 +17,25 @@ This repository shows how to set up a **local Jenkins server** using Docker Comp
 
 1. Move into the Jenkins compose folder:
 
-   ```bash
-   cd jenkins-compose
+```bash
+cd jenkins-compose
+```
 
 2.	Start Jenkins:
 
+```bash
 docker compose up -d --build
-
+```
 
 3.	Grab the admin password:
 
+```bash
 docker exec -it jenkins bash -lc 'cat /var/jenkins_home/secrets/initialAdminPassword'
-
+```
 
 4.	Open Jenkins at http://localhost:8080 and finish the setup wizard:
- - Install Suggested Plugins
- - Create your admin user
+- Install Suggested Plugins
+- Create your admin user
 
 ---
 
@@ -41,14 +44,14 @@ docker exec -it jenkins bash -lc 'cat /var/jenkins_home/secrets/initialAdminPass
 ### Install required plugins
 
 In Manage Jenkins → Plugins, ensure these are installed:
-  -	Pipeline
-  -	Git
-  -	Git client
-  -	Docker Pipeline
-  -	JUnit
-  - Stage View
-  - Datadog
-	-	(Optional) Workspace Cleanup
+-	Pipeline
+-	Git
+-	Git client
+-	Docker Pipeline
+-	JUnit
+- Stage View
+- Datadog
+-	(Optional) Workspace Cleanup
 
 ### Create a Pipeline Job
 1.	New Item → Pipeline → hello-jenkins-py
@@ -64,42 +67,42 @@ In Manage Jenkins → Plugins, ensure these are installed:
 
 ## The Jenkinsfile Explained
 
+<pre markdown="1">
+```groovy
 pipeline {
   agent { docker { image 'python:3.13-slim' } }
 
   options {
-    skipDefaultCheckout()  // disable implicit checkout
-    timestamps()           // add timestamps to logs
+    skipDefaultCheckout()
+    timestamps()
   }
 
   stages {
     stage('Checkout') {
       steps {
-        deleteDir()        // clean workspace
-        checkout scm       // full clone of repo
+        deleteDir()
+        checkout scm
       }
     }
-
     stage('Install deps') {
       steps {
-        sh 'python --version'
-        sh 'pip install --upgrade pip'
         sh 'pip install -r requirements.txt'
       }
     }
-
     stage('Test') {
       steps {
         sh 'pytest -q --junitxml=reports/junit.xml'
       }
       post {
         always {
-          junit allowEmptyResults: true, testResults: 'reports/junit.xml'
+          junit 'reports/junit.xml'
         }
       }
     }
   }
 }
+```
+</pre>
 
 - Agent: runs every stage in a fresh python:3.13-slim container
 - Checkout: cleans the workspace and clones the repo
@@ -112,10 +115,12 @@ pipeline {
 
 Run locally
 
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pytest -q
+```
 
 ---
 
@@ -139,10 +144,10 @@ Use this option to make the Jenkins plugin report directly to Datadog without us
 5. Enter a valid Datadog API Key (or use Select from credentials option).
 6. Click the Test Key button to verify that your API key is valid.
 7. Configure CI Visibility:
-  a) Enable the Enable CI Visibility checkbox.
-  b) (Optional) Configure your CI Instance name.
+   a) Enable the Enable CI Visibility checkbox.
+   b) (Optional) Configure your CI Instance name.
 8. (Optional) Configure logs collection:
-  a) Enable the Enable Log Collection checkbox.
+   a) Enable the Enable Log Collection checkbox.
 9. (Optional) Enter the name of the host that you use to access Datadog UI (for example, app.datadoghq.com) in the Datadog App hostname field.
 10. Save your configuration.
 
